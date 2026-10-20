@@ -1,0 +1,8 @@
+mujoco==3.16.0
+numpy>=1.26
+opencv-python-headless>=4.9
+pillow>=10
+imageio>=2.34
+imageio-ffmpeg>=0.5
+matplotlib>=3.8
+ultralytics>=8.3

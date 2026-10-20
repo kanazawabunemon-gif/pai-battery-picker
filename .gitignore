@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+out/
+runs/
+sim/assets/so101/_scene_*.xml
