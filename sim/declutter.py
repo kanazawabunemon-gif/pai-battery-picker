@@ -117,7 +117,7 @@ class ClearAndPick:
             f[1] += 1
         self.drags.append([obj.centre[:2] + 0.05 * np.asarray(direction[:2]), 1])
 
-    def _try_remove(self, b, objs, hm, label=None):
+    def _try_remove(self, b, objs, hm, label=None, reason=""):
         """Pick b out of the way (waste bin; hazard box if it is a hazard). False if not possible."""
         if self._covered(b, objs, hm):
             return False
@@ -126,7 +126,7 @@ class ClearAndPick:
             return False
         haz = b.cls in HAZARD
         kind = label or ("pick_hazard" if haz else "clear")
-        self.log.append((kind, b.key, b.cls))
+        self.log.append((kind, b.key, b.cls, reason))
         self._execute(b, g, (BOX_POS if haz else BIN_POS) + np.array([0, 0, 0.13]),
                       "hazard" if haz else (label or "clear"))
         return True
@@ -172,7 +172,7 @@ class ClearAndPick:
             for h in sorted(hazards, key=lambda o: -o.top):
                 cov = sorted(self._covered(h, objs, hm), key=lambda o: -o.top)
                 if cov:                                   # something lies on it: lift that off
-                    if any(self._try_remove(b, objs, hm) for b in cov):
+                    if any(self._try_remove(b, objs, hm, reason="on_top") for b in cov):
                         acted = True
                         break
                     d = cov[0].centre[:2] - h.centre[:2]
@@ -189,7 +189,7 @@ class ClearAndPick:
                 near = sorted((o for o in objs if o is not h and np.linalg.norm(o.centre[:2] - bxy)
                                < 0.5 * max(o.width, o.length or o.width) + 0.012),
                               key=lambda o: np.linalg.norm(o.centre[:2] - bxy))
-                if any(self._try_remove(b, objs, hm) for b in near[:2]):
+                if any(self._try_remove(b, objs, hm, reason="blocks_fingers") for b in near[:2]):
                     acted = True
                     break
                 # nothing removable there: a wall (or an ungraspable object). Slide the hazard out,
@@ -203,7 +203,7 @@ class ClearAndPick:
             if acted:
                 continue
             # 3) last resort: take whatever is on top of the pile
-            if any(self._try_remove(b, objs, hm) for b in sorted(objs, key=lambda o: -o.top)
+            if any(self._try_remove(b, objs, hm, reason="top_of_pile") for b in sorted(objs, key=lambda o: -o.top)
                    if b.cls not in HAZARD):
                 continue
             self.log.append(("stuck", None, None))

@@ -45,6 +45,8 @@ with open(a.out, "w") as f:
         kinds = [x[0] for x in cp.log]
         rec = dict(seed=seed, mode=a.mode, **s, actions=sum(k in ("pick_hazard", "clear", "search", "nudge") for k in kinds),
                    nudges=kinds.count("nudge"),
+                   clear_reasons=[x[3] for x in cp.log if x[0] == "clear" and len(x) > 3],
+                   picks=kinds.count("pick_hazard"),
                    clears=kinds.count("clear"), searches=kinds.count("search"), end=kinds[-1] if kinds else "",
                    hazards=[(it.kind, it.status) for it in env.info.items if it.cls in HAZARD],
                    sim_seconds=round(env.data.time, 1), wall_seconds=round(time.time() - t0, 1))

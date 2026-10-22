@@ -128,7 +128,7 @@ def results_card(vis_bins: dict, e2e: dict):
     im, dr = _base()
     _center(dr, 30, "結果（シミュレーション）", 44, ACCENT)
     im.paste(chart.resize((1200, 525)), (40, 110))
-    _center(dr, 655, "AI検出：学習に使っていない場面で評価。完璧な検出：シミュレータの正解を使った比較用", 22, (180, 190, 205))
+    _center(dr, 655, "見間違いゼロの場合＝AIの代わりにシミュレータの正解を使った比較用。差は3ポイント → 取り残しの大部分は掴む側", 21, (180, 190, 205))
     return im
 
 

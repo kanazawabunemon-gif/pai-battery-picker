@@ -137,7 +137,7 @@ def main():
     rec.hold(2.0, "done")
     rec.close()
     env.update_status()
-    print(a.seed, env.summary(), [x[0] for x in cp.log])
+    print(a.seed, env.summary(), [x[0] + (f"({x[3]})" if len(x) > 3 and x[3] else "") for x in cp.log])
 
 
 if __name__ == "__main__":
